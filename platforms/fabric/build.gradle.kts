@@ -40,14 +40,18 @@ dependencies {
 
     transitiveInclude(project(":unifiedmetrics-core"))
 
-    transitiveInclude.incoming.artifacts.forEach {
-        val dependency: Any = when (val component = it.id.componentIdentifier) {
-            is ProjectComponentIdentifier -> project(component.projectPath)
-            else -> component.toString()
+    val includeTransitives = tasks.register("includeTransitives") {
+        doFirst {
+            transitiveInclude.incoming.artifacts.forEach {
+                val dep: Any = when (val id = it.id.componentIdentifier) {
+                    is ProjectComponentIdentifier -> project(id.projectPath)
+                    else -> id.toString()
+                }
+                include(dep)
+            }
         }
-
-        include(dependency)
     }
+    tasks.named("jar").configure { dependsOn(includeTransitives) }
 }
 
 loom {
