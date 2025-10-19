@@ -27,13 +27,13 @@ import dev.cubxity.plugins.metrics.common.metric.Metrics
 class PaperWorldCollector(private val bootstrap: UnifiedMetricsBukkitBootstrap) : Collector {
     override fun collect(): List<Metric> {
         val worlds = bootstrap.server.worlds
-        val samples = ArrayList<Metric>(worlds.size * 3)
+        val samples = ArrayList<Metric>(worlds.size * 2)
 
         worlds.fastForEach { world ->
             val tags = mapOf("world" to world.name)
             samples.add(GaugeMetric(Metrics.Server.WorldEntitiesCount, tags, world.entityCount))
             samples.add(GaugeMetric(Metrics.Server.WorldPlayersCount, tags, world.playerCount))
-            samples.add(GaugeMetric(Metrics.Server.WorldLoadedChunks, tags, world.chunkCount))
+//            samples.add(GaugeMetric(Metrics.Server.WorldLoadedChunks, tags, world.chunkCount))
         }
 
         return samples
